@@ -1,0 +1,27 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+}
+
+.number {
+  width: 120px;
+  height: 180px;
+  background-color: black;
+  border-radius: 12px;
+  line-height: 180px;
+  text-align: center;
+  color: white;
+  font-size: 120px;
+}
+
+.number.left{
+  margin-right: 10px;
+}
