@@ -24,10 +24,11 @@ $(document).ready(function() {
       mainCounter++;
       counter++;
 
-      /*** FUNZIONI A SUPPORTO ***/
+      /*** ---------> FUNZIONI A SUPPORTO ***/
 
-      //Definiamo le funzioni interne in base che
-      //siamo in una normale iterazione(1..59)
+      //Definiamo le funzioni interne in base che:
+
+      //1. siamo in una normale iterazione(1..59)
       var upToMainCounterLimitOperations = function () {
         //GESTIAMO IL CONTEGGIO DA 1 A 10
         if (counter === 10) {
@@ -44,7 +45,8 @@ $(document).ready(function() {
         //gestisco numero secondi  ad ogni iterazione da 1 a 10
         updateVisibleNumber('right', counter);
       };
-      //abbiamo raggiunto il limite del conteggio (60)
+
+      //2. abbiamo raggiunto il limite del conteggio (60)
       var mainCounterLimitReachedOperations = function (){
         //azzero tutti i counter
         mainCounter = 0;
@@ -78,7 +80,7 @@ $(document).ready(function() {
         $('.number.'+ numbersSide).flip('toggle');
       }
 
-      //*** DEFINIZIONE ED ESECUZIONE OPERAZIONE AD OGNI ITERAZIONE ***/
+      //*** ---> DEFINIZIONE ED ESECUZIONE OPERAZIONE AD OGNI ITERAZIONE ***/
 
       //L'operazione corrente risponderà al valore del mainCounter rispetto al limite
       var iterationOp = (mainCounter < secondsToReach ) ? upToMainCounterLimitOperations : mainCounterLimitReachedOperations;
