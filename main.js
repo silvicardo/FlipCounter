@@ -3,13 +3,11 @@
 
 $(document).ready(function() {
 
-  //oriento la direzione del flip degli elementi
-   $('.number.left').flip({axis: 'x' });
-   $('.number.right').flip({axis: 'x' });
+  var secondsToReach = 60;
 
-   //posso monitorare lo status di flip tramite queste due var
-   var flipLeft = $('.number.left').data("flip-model");
-   var flipRight = $('.number.right').data("flip-model");
+  //oriento la direzione del flip degli elementi
+   $('.number.left').flip({ axis: 'x' });
+   $('.number.right').flip({ axis: 'x' });
 
    //creo tre contatori
    //--> il main arriva a 60
@@ -22,76 +20,72 @@ $(document).ready(function() {
    //faccio partire un timer infinito
   var clock = setInterval(function(){
 
-      //puntatori JQuery
-      var leftFrontNum = $('.number.left .front');
-      var leftBackNum = $('.number.left .back');
-      var rightFrontNum = $('.number.right .front');
-      var rightBackNum = $('.number.right .back');
-
-      //ad ogni giro incremento mainCounter e counter
+      //AD OGNI SECONDO incremento mainCounter e counter
       mainCounter++;
       counter++;
 
-      console.log('counter' + counter);
-      console.log('main ' + mainCounter);
-      console.log('tensCounter ' + tensCounter);
+      /*** FUNZIONI A SUPPORTO ***/
 
-      //TODO: logica gestione counters da migliorare
+      //Definiamo le funzioni interne in base che
+      //siamo in una normale iterazione(1..59)
+      var upToMainCounterLimitOperations = function () {
+        //GESTIAMO IL CONTEGGIO DA 1 A 10
+        if (counter === 10) {
 
-      //FINO a che non sei a 60
-      if (mainCounter < 60 ) {//inferiore a 60
-
-        //Ripeto dei conteggi fino a 10
-        if (counter < 10) {
-
-          //gestisco UI, i counter sono già incrementati
-          if (flipRight.isFlipped){
-              rightFrontNum.text(counter);
-              rightBackNum.text('');
-          } else {
-            rightFrontNum.text('');
-            rightBackNum.text(counter);
-          }
-        } else {//sono a 10
-          //resetto counter a 0
-          //e aumneto il tensCounter di uno
+          //resetto il conto da 1 a 10
           counter = 0;
           tensCounter++;
 
-          //gestisco UI
-          rightFrontNum.text(counter);
-          rightBackNum.text('');
+          //gestisco numero decine
+          updateVisibleNumber('left', tensCounter);
 
-          if (!flipLeft.isFlipped){
-            leftFrontNum.text('');
-            leftBackNum.text(tensCounter);
-          } else {
-            leftFrontNum.text(tensCounter);
-            leftBackNum.text('');
-          }
-          //eseguo il flip della decina
-          $('.number.left').flip('toggle');
         }
-      } else {//SE SEI ARRIVATO A 60
 
+        //gestisco numero secondi  ad ogni iterazione da 1 a 10
+        updateVisibleNumber('right', counter);
+      };
+      //abbiamo raggiunto il limite del conteggio (60)
+      var mainCounterLimitReachedOperations = function (){
         //azzero tutti i counter
         mainCounter = 0;
         counter = 0;
         tensCounter = 0;
 
-        //gestisco la UI
-        rightFrontNum.text('0');
-        rightBackNum.text('');
-        leftFrontNum.text(tensCounter);
-        leftBackNum.text('');
-        //eseguo il flip della decina
-        $('.number.left').flip('toggle');
+        //gestisco entrambi numeri, si riparte da zero
+        updateVisibleNumber('left', tensCounter);
+        updateVisibleNumber('right', counter);
+      };
+
+      //ognuno di esse richiama la seguente funzione per aggiornare numero ed
+      //eseguire la flipAnimation
+      function updateVisibleNumber(numbersSide , counterValue) {
+
+        //puntatori JQuery + oggettoFlip
+        var frontNum = $('.number.' + numbersSide + ' .front');
+        var backNum = $('.number.' + numbersSide + ' .back');
+        var flipObj = $('.number.'+ numbersSide).data("flip-model");
+
+        //gestione contenuto (numero) facce(front - back)
+        if (flipObj.isFlipped){
+            frontNum.text(counterValue);
+            backNum.text('');
+        } else {
+          frontNum.text('');
+          backNum.text(counterValue);
+        }
+
+        //animazione flip effettiva su lato richiesto
+        $('.number.'+ numbersSide).flip('toggle');
       }
-      //eseguo sempre il flip del secondo
-      $('.number.right').flip('toggle');
+
+      //*** DEFINIZIONE ED ESECUZIONE OPERAZIONE AD OGNI ITERAZIONE ***/
+
+      //L'operazione corrente risponderà al valore del mainCounter rispetto al limite
+      var iterationOp = (mainCounter < secondsToReach ) ? upToMainCounterLimitOperations : mainCounterLimitReachedOperations;
+
+      //eseguo l'operazione
+      iterationOp();
+
   }, 1000);
-
-
-
 
 });
